@@ -21,6 +21,7 @@ let package = Package(
             name: "whisperlib",
             sources: [
                 "ggml.c",
+                "llama.cpp",
                 "whisper.cpp",
                 "ggml-alloc.c",
                 "ggml-backend.c",
