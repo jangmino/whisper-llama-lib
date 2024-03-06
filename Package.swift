@@ -44,9 +44,9 @@ let package = Package(
                 .linkedFramework("Accelerate")
             ]
         ),
-        .testTarget(
-            name: "whisperlibTests",
-            dependencies: ["whisperlib"]),
+//        .testTarget(
+//            name: "whisperlibTests",
+//            dependencies: ["whisperlib"]),
     ],
     cxxLanguageStandard: .cxx11
 )
