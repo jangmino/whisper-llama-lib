@@ -187,10 +187,7 @@ static bool ggml_graph_compute_helper(
         ggml_backend_metal_set_n_cb(backend, n_threads);
     }
 #endif
-    // @@--- Modification by Jangmin Oh:
-    // llama.cpp 와 통합하기 위한 조치
     return ggml_backend_graph_compute(backend, graph) == GGML_STATUS_SUCCESS;
-    // ---@@
 }
 
 // faster matrix multiplications for tensors that do not have dimension 0 divisible by "pad"
@@ -3855,7 +3852,7 @@ const char * whisper_print_system_info(void) {
     s += "VSX = "       + std::to_string(ggml_cpu_has_vsx())       + " | ";
     s += "CUDA = "      + std::to_string(ggml_cpu_has_cublas())    + " | ";
     s += "COREML = "    + std::to_string(whisper_has_coreml())     + " | ";
-    s += "OPENVINO = "  + std::to_string(whisper_has_openvino())   + " | ";
+    s += "OPENVINO = "  + std::to_string(whisper_has_openvino())          ;
 
     return s.c_str();
 }
@@ -5360,7 +5357,10 @@ int whisper_full_with_state(
                             beam_candidates.begin(),
                             beam_candidates.end(),
                             [](const beam_candidate & a, const beam_candidate & b) {
-                        return a.sequence.sum_logprobs_all > b.sequence.sum_logprobs_all;
+                        if (a.sequence.sum_logprobs_all != b.sequence.sum_logprobs_all) {
+                            return a.sequence.sum_logprobs_all > b.sequence.sum_logprobs_all;
+                        }
+                        return a.decoder_idx < b.decoder_idx;
                     });
 
                     uint32_t cur_c = 0;
